@@ -6,4 +6,4 @@ const contactMessageSchema = new Schema({
   message: { type: String, required: true },
 });
 
-module.exports = mongoose.model("ContactMessage",contactMessageSchema)
+export default mongoose.model("ContactMessage",contactMessageSchema)
