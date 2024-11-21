@@ -1,48 +1,63 @@
-import express, { Request, Response, NextFunction } from "express";
+import express, { Request, Response } from "express";
 import User from "../models/User";
+import userRefreshTokens from "../models/userRefreshToken";
 import jwt from "jsonwebtoken";
-const app = express();
 
-const login = app.post("/login", async (req: Request, res: Response, next: NextFunction) => {
+const router = express.Router();
+
+router.post("/login", async (req: any, res: any) => {
     let { email, password } = req.body;
 
     let existingUser;
     try {
         existingUser = await User.findOne({ email: email });
     } catch {
-        const error = new Error("Error! User not Found");
-        return next(error);
+        return res.status(422).json({ message: "User Not Found" });
     }
     if (!existingUser || existingUser.password != password) {
-        const error = Error("Wrong details please check at once");
-        return next(error);
+        return res.status(401).json({ message: "Invalid Credentials" });
     }
 
-    let token;
+    let accessToken;
+    let refreshToken;
     try {
-        token = jwt.sign(
+        accessToken = jwt.sign(
             {
                 userId: existingUser.id,
                 username: existingUser.username,
                 email: existingUser.email,
             },
-            process.env.JWT_SECRET as string,
-            { expiresIn: "1h" }
+            process.env.JWT_SECRET_ACCESS as string,
+            {expiresIn:process.env.ACCESS_TOKEN_EXPIRES_IN}
+        );
+        refreshToken = jwt.sign(
+            {
+                userId: existingUser.id,
+                username: existingUser.username,
+                email: existingUser.email,
+            },
+            process.env.JWT_SECRET_REFRESH as string,
+            {expiresIn:process.env.REFRESH_TOKEN_EXPIRES_IN}
         );
     } catch (err) {
-        console.log(err);
-        const error = new Error("Error! JWT not created");
-        return next(error);
+        return res.status(500).json({ message: "Token Generation Failed" });
     }
+    const newUserRefreshToken = new userRefreshTokens({
+        userId: existingUser.id,
+        token: refreshToken,
+    });
+    await newUserRefreshToken.save();
+
     res.status(200).json({
         sucess: true,
         data: {
             userId: existingUser.id,
             username: existingUser.username,
             email: existingUser.email,
-            token,
+            accessToken,
+            refreshToken,
         },
     });
 });
 
-export default login;
+export default router;
