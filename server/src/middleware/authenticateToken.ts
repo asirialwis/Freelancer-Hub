@@ -1,17 +1,20 @@
 import { verify } from "jsonwebtoken";
 
-export default function authenticateToken(req: any, res: any, next: any) {
-    const authHeader = req.headers["authorization"];
-    const token = authHeader && authHeader.split(" ")[1];
 
-    if(!token){
+export default async function authenticateToken(req: any, res: any, next: any) {
+    const authHeader = req.headers["authorization"];
+    const accessToken = authHeader && authHeader.split(" ")[1];
+
+    if(!accessToken){
         return res.status(401).json({
             success: false,
             message: "Access Denied: No token Provided",
         });
     }
+   
     try{
-        const decoded = verify(token, process.env.JWT_SECRET as string);
+        const decoded = verify(accessToken, process.env.JWT_SECRET_ACCESS as string);
+        req.accessToken = {value: accessToken};
         req.user = decoded;
         next();
     }
