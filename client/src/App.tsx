@@ -1,18 +1,28 @@
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Login from "./components/Login";
+import Home from "./components/Home";
+import ContactForm from "./components/ContactForm";
+import PrivateRoute from "./components/PrivateRoute";
 
-
-import './App.css'
-
-function App() {
- 
-
+const App: React.FC = () => {
   return (
-    <>
-      
-      <h1>Welcome To FreeLancer Hub</h1>
-     
-     
-    </>
-  )
-}
+    <Router>
+      <Routes>
 
-export default App
+        <Route path="/login" element={<Login />} />
+        <Route path="/home" element = {<Home/>}></Route>
+        <Route
+          path="/contact"
+          element={
+            <PrivateRoute>
+              <ContactForm />
+            </PrivateRoute>
+          }
+        />
+      </Routes>
+    </Router>
+  );
+};
+
+export default App;
