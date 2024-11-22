@@ -20,23 +20,23 @@ const signup = app.post(
             const error = new Error("An error occurred");
             return next(error);
         }
-        let token;
-        try {
-            token = jwt.sign(
-                { userid: newUser.id, email: newUser.email },
-                process.env.JWT_SECRET as string,
-                { expiresIn: "1h" }
-            );
-        } catch (err) {
-            const error = new Error("An error occurred");
-            return next(error);
-        }
+        // let token;
+        // try {
+        //     token = jwt.sign(
+        //         { userid: newUser.id, email: newUser.email },
+        //         process.env.JWT_SECRET as string,
+        //         { expiresIn: "1h" }
+        //     );
+        // } catch (err) {
+        //     const error = new Error("An error occurred");
+        //     return next(error);
+        // }
         res.status(201).json({
             sucess: true,
             data: {
                 userId: newUser.id,
                 email: newUser.email,
-                token: token,
+                // token: token,
             },
         });
     }

@@ -16,7 +16,7 @@ router.post('/refresh-token', async (req: any, res: any) => {
         const decodedRefreshToken = jwt.verify(refreshToken, process.env.JWT_SECRET_REFRESH as string) as JwtPayload;
 
         // Check if the refresh token exists in the database for this user
-        // Update to use the correct field name 'token' instead of 'refreshToken'
+
         const userRefreshToken = await userRefreshTokens.findOne({ token: refreshToken, userId: decodedRefreshToken.userId });
 
         if (!userRefreshToken) {
@@ -27,12 +27,22 @@ router.post('/refresh-token', async (req: any, res: any) => {
         await userRefreshTokens.deleteOne({ _id: userRefreshToken._id });
 
         // Sign a new access token and refresh token
-        const accessToken = jwt.sign({ userId: decodedRefreshToken.userId }, process.env.JWT_SECRET_ACCESS as string, {
+        const accessToken = jwt.sign(
+            {
+                userId: decodedRefreshToken.userId,
+                username: decodedRefreshToken.username,
+                email: decodedRefreshToken.email,
+            }, process.env.JWT_SECRET_ACCESS as string, {
             subject: 'accessApi',
             expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN
         });
 
-        const newRefreshToken = jwt.sign({ userId: decodedRefreshToken.userId }, process.env.JWT_SECRET_REFRESH as string, {
+        const newRefreshToken = jwt.sign(
+            {
+                userId: decodedRefreshToken.userId,
+                username: decodedRefreshToken.username,
+                email: decodedRefreshToken.email,
+            }, process.env.JWT_SECRET_REFRESH as string, {
             subject: 'refreshToken',
             expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN
         });
@@ -40,7 +50,7 @@ router.post('/refresh-token', async (req: any, res: any) => {
         // Insert the new refresh token into the database
         await userRefreshTokens.create({
             userId: decodedRefreshToken.userId,
-            token: newRefreshToken, // make sure to insert the token field
+            token: newRefreshToken,
         });
 
         return res.status(200).json({
