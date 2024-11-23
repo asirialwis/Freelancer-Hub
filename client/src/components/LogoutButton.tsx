@@ -1,20 +1,20 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+// import axios from "axios";
 
 const LogoutButton: React.FC = () => {
     const navigate = useNavigate();
 
     const handleLogout = async () => {
         try {
-            const accessToken = localStorage.getItem("accessToken");
-            // Call the backend logout endpoint
-            await axios.post("http://localhost:5000/auth/logout", {}, {
-                withCredentials: true,
-                headers: {
-                    Authorization: `Bearer ${accessToken}`, // Add the access token to the request
-                },
-            });
+            // const accessToken = localStorage.getItem("accessToken");
+            // // Call the backend logout endpoint
+            // await axios.post("http://localhost:5000/auth/logout", {}, {
+            //     withCredentials: true,
+            //     headers: {
+            //         Authorization: `Bearer ${accessToken}`, // Add the access token to the request
+            //     },
+            // });
 
             localStorage.clear();
             alert("Logged out successfully");
