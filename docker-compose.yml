@@ -10,10 +10,7 @@ services:
       - "5000:5000"
     env_file:
       - ./server/.env
-    depends_on:
-      - db
-    environment:
-      - MONGODB_URI=mongodb://db:27017/freelancer-hub
+    
 
 
   client-dev:
@@ -41,8 +38,7 @@ services:
       - "8080:5000"
     env_file:
       - ./server/.env
-    depends_on:
-      - db
+
 
   client-prod:
     build:
@@ -58,12 +54,3 @@ services:
       - server-prod
 
 
-  db:
-    image: mongo:latest
-    ports:
-      - "27017:27017"
-    volumes:
-      - Freelancer-Hub:/data/db
-
-volumes:
-  Freelancer-Hub:
