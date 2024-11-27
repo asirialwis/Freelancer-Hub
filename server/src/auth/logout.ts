@@ -1,12 +1,14 @@
 import express from "express";
 
 import userRefreshTokens from "../models/userRefreshToken";
+import logoutMiddleware from '../middleware/logoutMiddleware';
 
 const router = express.Router();
 
-router.post("/logout", async (req: any, res: any) => {
+router.post("/logout",logoutMiddleware, async (req: any, res: any) => {
     try {
         await userRefreshTokens.deleteMany({ userId: req.userId  });
+        // console.log(req.userId);
         return res.status(200).json({ message: "Logged out successfully" });
 
     } catch (err) {
