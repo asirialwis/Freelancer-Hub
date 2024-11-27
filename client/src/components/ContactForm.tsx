@@ -2,13 +2,15 @@ import React, { useState, ChangeEvent, FormEvent } from "react";
 import api from "../auth/api";
 import LogoutButton from "./LogoutButton";
 
+
 interface FormData {
+  userId: string|null
   topic: string;
   message: string;
 }
 
 const ContactForm: React.FC = () => {
-  const [formData, setFormData] = useState<FormData>({ topic: "", message: "" });
+  const [formData, setFormData] = useState<FormData>({ topic: "", message: "" , userId: localStorage.getItem("userId")});
   const [responseMessage, setResponseMessage] = useState<string>("");
   const [error, setError] = useState<string>("");
 

@@ -1,7 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import sendMessage from '../services/contactMessageService';
+import { ObjectId } from 'mongodb';
 
 interface MessageData {
+  userId:ObjectId;
   topic: string;
   message: string;
 }
