@@ -5,6 +5,8 @@ import Home from "./components/Home";
 import ContactForm from "./components/ContactForm";
 import SignUp from "./components/SignUp";
 import PrivateRoute from "./components/PrivateRoute";
+import Upload from "./components/profile/Upload";
+// import SimpleFileUpload from "./components/SimpleFileUpload";
 
 const App: React.FC = () => {
   return (
@@ -13,6 +15,11 @@ const App: React.FC = () => {
         <Route path= "/signup" element={<SignUp/>}></Route>
         <Route path="/login" element={<Login />} />
         <Route path="/home" element = {<Home/>}></Route>
+        <Route path="/upload" element={
+          <PrivateRoute>
+            <Upload/>
+          </PrivateRoute>
+          }></Route>
         <Route
           path="/contact"
           element={
