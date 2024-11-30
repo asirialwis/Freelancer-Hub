@@ -9,6 +9,7 @@ import LogoutButton from "./LogoutButton";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Stack } from "@mui/material";
+import ProfileImageViewer from "./profile/ProfileImageViewer";
 
 const theme = createTheme({
   palette: {
@@ -53,6 +54,9 @@ export default function Home() {
           <Button color="secondary" variant="outlined" sx={{ marginRight: 1 }} onClick={() => navigate("/signup")}>
             Sign UP
           </Button>
+          <Button color="secondary" variant="outlined" sx={{ marginRight: 1 }} onClick={() => navigate("/upload")}>
+            Profile
+          </Button>
           <LogoutButton />
         </Toolbar>
       </AppBar>
@@ -63,6 +67,7 @@ export default function Home() {
         spacing={2}
         style={{ minHeight: "80vh", padding: "1rem" }}
       >
+        <ProfileImageViewer />
         <Typography variant="h4" color="primary">
           Hi {username} ! Welcome Back
         </Typography>
