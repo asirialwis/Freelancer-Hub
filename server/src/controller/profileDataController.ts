@@ -1,70 +1,49 @@
-import { Request, Response, NextFunction } from 'express';
-import { ObjectId } from 'mongodb';
-import saveProfileDetails from '../services/profileDetailService';
+import { Request, Response } from "express";
+import { saveProfileDetails , getProfileDetails } from "../services/profileDetailService";
 
-interface ProfileData{
-  userId:ObjectId
-  imgUrl:String
-  videoUrl:String
+
+export async function saveProfileData(req: Request, res: Response):Promise<void> {
+  try {
+    const savedData = await saveProfileDetails(req.body);
+     res.status(201).json({
+      message: "Profile saved successfully",
+      data: savedData,
+    });
+  } catch (error: any) {
+    console.error("Error saving profile details:", error);
+
+    res.status(500).json({
+      message: "Failed to save profile details",
+      error: error.message,
+    });
+  }
 }
+export async function getProfileData(req: Request, res: Response): Promise<Response> {
+  try {
+    const userId = req.params.userId;
+    const data = await getProfileDetails(userId);
 
-const handleProfileDetails =  async (req:Request,res:Response,next:NextFunction):Promise<void>=>{
-    try {
-      const profileData:ProfileData =req.body
-      const savedProfileData = await saveProfileDetails(profileData);
-
-      res.status(201).json({
-          sucess:true,
-          message:"Details Saved Sucessfully",
-          data:savedProfileData
-      })
-
-    } catch (error) {
-      next(error)
+    if (!data) {
+      return res.status(200).json({
+        message: "Profile data not available",
+        data: {
+          userId: userId,
+          imgUrl: null,
+          videoUrl: null,
+        },
+      });
     }
+
+    return res.status(200).json({
+      message: "Profile details fetched successfully",
+      data,
+    });
+  } catch (error: any) {
+    console.error("Error fetching profile details:", error);
+
+    return res.status(500).json({
+      message: "Failed to fetch profile details",
+      error: error.message,
+    });
+  }
 }
-
-export default handleProfileDetails;
-
-
-
-
-
-// import ProfileData from "../models/ProfileData";
-
-// const createVideo = async (req: any, res: any, next: any) => {
-//   const { imgUrl, videoUrl } = req.body;
-
-//   // Validate required fields
-//   if (!imgUrl || !videoUrl) {
-//     res.status(400).json({ success: false, message: "imgUrl & videoUrl fields are required" });
-//     return;
-//   }
-
-//   try {
-//     // Create a new document in MongoDB
-//     const video = new ProfileData({
-//       imgUrl,
-//       videoUrl,
-//     });
-
-//     // Save the document to the database
-//     await video.save();
-
-//     res.status(201).json({
-//       success: true,
-//       message: "Video created successfully",
-//       video,
-//     });
-//   } catch (error) {
-//     console.error("Error saving video:", error);
-//     const errorMessage = error instanceof Error ? error.message : "Unknown error";
-//     res.status(500).json({
-//       success: false,
-//       message: "An error occurred while creating the video",
-//       error: errorMessage,
-//     });
-//   }
-// };
-
-// export default createVideo;

@@ -13,8 +13,7 @@ const ProfileDataSchema = new mongoose.Schema({
         required: true
     },
     videoUrl: {
-        type: String,
-        required: true
+        type: String
     },
 })
 
